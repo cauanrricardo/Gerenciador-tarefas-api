@@ -24,6 +24,7 @@ public class TarefaController {
     public Tarefa criar(@RequestBody Tarefa tarefa){
         return  service.salvar(tarefa);
     }
+
     @DeleteMapping("/{id}") //URL: localhost:8080/tarefas/1
     public void deletar(@PathVariable Long id){
         service.deletar(id);
