@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApiTarefasTests {
+
 	@LocalServerPort
 	private int port;
 
@@ -20,23 +21,68 @@ class ApiTarefasTests {
 		RestAssured.port = port;
 	}
 
+	/*
+	* given() - configuração
+	* when() - ação
+	* then() - a validaçãp*/
 	@Test
 	void deveListarTarefaComSucesso() {
-		given().contentType(ContentType.JSON)
+		given().contentType(ContentType.JSON) //o conteudo é JSON
 				.when().get("/tarefas")
 				.then().statusCode(200); //verifica se a API respondeu OK
 	}
 
 	@Test
 	void deveCriarTarefaComSucesso(){
-		String tarefaJson = "{ \"titulo\": \"Testar com RestAssured\", \"conclusao\":false }";
-		given().contentType(ContentType.JSON)
-				.body(tarefaJson)
+		String tarefaJson = "{ \"titulo\": \"Testar com RestAssured\", \"concluida\":false }";
+		given().contentType(ContentType.JSON).body(tarefaJson)
 				.when().post("/tarefas")
 				.then().statusCode(200)
-				.body("titulo", equalTo
-						("Testar com RestAssured"))
+				.body("titulo", equalTo("Testar com RestAssured"))
 				.body("id", notNullValue());
+	}
+
+	@Test
+	void deveDeletarComSucesso(){
+		String tarefaJson = "{\"titulo\": \"Tarefa para deletar\", \"concluida\": false}";
+
+		int idDeletar = given().contentType(ContentType.JSON)
+				.body(tarefaJson)
+				.when().post("/tarefas")
+				.then()
+				.statusCode(200) //criou a tarefa
+				.extract()
+				.path("id"); //extrai o id e gaura na variavél
+
+	given().pathParam("id", idDeletar) // esta função substitui o que está entre chaves na URL
+			.when().delete("/tarefas/{id}") // o {id} vai ser substituido pelo valor da variavel
+			.then().statusCode(200);
+
+	}
+
+	@Test
+	void deveAtualizarComSUcesso(){
+		String tarefaJson = "{\"titulo\": \"Tarefa para atualizar\", \"concluida\": false}";
+
+		int idAtualizar = given().contentType(ContentType.JSON)
+					.body(tarefaJson)
+				.when()
+					.post("/tarefas")
+				.then()
+					.statusCode(200)
+					.extract()
+					.path("id");
+		String novaTarefaJson =  "{\"titulo\": \"Tarefa atualizada\", \"concluida\": true}";
+		given().contentType(ContentType.JSON)
+					.pathParam("id", idAtualizar)
+					.body(novaTarefaJson)
+				.when()
+					.put("/tarefas/{id}")
+				.then()
+					.statusCode(200)
+					.body("titulo", equalTo("Tarefa atualizada"))
+					.body("concluida", equalTo(true));
+
 	}
 
 }
