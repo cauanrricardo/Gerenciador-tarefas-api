@@ -131,4 +131,12 @@ class ApiTarefasTests {
 					.statusCode(400);
 
 	}
+
+	@Test
+	void deveRetornar404AoDeletarTarefaInexistente(){
+		int idInexistente = 999;
+		given()
+				.when().delete("/tarefas/" + idInexistente)
+				.then().statusCode(404);
+	}
 }
