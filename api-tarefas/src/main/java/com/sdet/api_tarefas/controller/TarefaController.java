@@ -29,6 +29,7 @@ public class TarefaController {
     public void deletar(@PathVariable Long id){
         service.deletar(id);
     }
+
     @PutMapping("/{id}")
     public Tarefa update(@PathVariable Long id, @RequestBody Tarefa tarefa){
         return  service.update(id, tarefa);
