@@ -87,4 +87,25 @@ class ApiTarefasTests {
 
 	}
 
+	@Test
+	void deveFalharAoTentarCriarUmaTarefaSemTitulo(){
+		String tarefaJson = "{\"titulo\": \"\", \"concluida\": false}";
+		given()
+					.contentType(ContentType.JSON)
+					.body(tarefaJson)
+				.when()
+					.post("/tarefas")
+				.then()
+					.statusCode(400);
+	}
+
+	@Test
+	void deveFalharAoTentarCriarTarefaComTituloMuitoCurto() {
+		String tarefaInvalida = "{\"titulo\": \"Oii\", \"conclusao\": false}";
+
+		given().contentType(ContentType.JSON)
+				.body(tarefaInvalida)
+				.when().post("/tarefas")
+				.then().statusCode(400);
+	}
 }
