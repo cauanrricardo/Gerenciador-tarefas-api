@@ -108,4 +108,27 @@ class ApiTarefasTests {
 				.when().post("/tarefas")
 				.then().statusCode(400);
 	}
+
+	@Test
+	void deveFalharAoTentarDarUpdateComTituloApagado(){
+		String tarefaJson = "{\"titulo\": \"Tarefa para atualizar\", \"concluida\": false}";
+
+		int idAtualizar = given().contentType(ContentType.JSON)
+				.body(tarefaJson)
+				.when()
+				.post("/tarefas")
+				.then()
+				.statusCode(200)
+				.extract()
+				.path("id");
+		String novaTarefaJson =  "{\"titulo\": \"\", \"concluida\": false}";
+		given()
+					.contentType(ContentType.JSON)
+					.body(novaTarefaJson)
+				.when()
+					.put("/tarefas/" + idAtualizar)
+				.then()
+					.statusCode(400);
+
+	}
 }
