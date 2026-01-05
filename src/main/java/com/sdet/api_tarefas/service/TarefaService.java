@@ -20,16 +20,17 @@ public class TarefaService {
     }
 
     public Tarefa salvar(Tarefa tarefa){
-        validarUpdate(tarefa);
         return repository.save(tarefa);
     }
 
     public void deletar(Long id){
+        if(!repository.existsById(id)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa não encontrada");
+        }
         repository.deleteById(id);
     }
 
     public Tarefa update(Long id, Tarefa novaTarefa ){
-        validarUpdate(novaTarefa);
 
         //tentar buscar a tarefa que ja esta no banco
         Tarefa tarefaExistente = repository.findById(id)
@@ -42,14 +43,5 @@ public class TarefaService {
         //salvar a nova tarefa
         return  repository.save(novaTarefa);
     }
-    private void validarUpdate(Tarefa novaTarefa){
-        if(novaTarefa.getTitulo() == null || novaTarefa.getTitulo().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ERRO_VALIDACAO_VAZIO");
-        }
-        if (novaTarefa.getTitulo().length() <= 3) {
-            System.out.println("DEBUG_SISTEMA: Detectou titulo curto!");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ERRO_VALIDACAO_CURTO");
-        }
 
-    }
 }

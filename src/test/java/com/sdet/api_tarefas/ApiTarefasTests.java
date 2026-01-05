@@ -128,6 +128,7 @@ class ApiTarefasTests {
 				.when()
 					.put("/tarefas/" + idAtualizar)
 				.then()
+					.log().all()
 					.statusCode(400);
 
 	}

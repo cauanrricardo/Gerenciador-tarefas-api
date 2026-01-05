@@ -3,6 +3,7 @@ package com.sdet.api_tarefas.controller;
 import com.sdet.api_tarefas.model.Tarefa;
 import com.sdet.api_tarefas.repository.TarefaRepository;
 import com.sdet.api_tarefas.service.TarefaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class TarefaController {
     }
 
     @PostMapping // ativado quando você ENVIA dados para a API  - POST(CRIAR)
-    public Tarefa criar(@RequestBody Tarefa tarefa){
+    public Tarefa criar(@Valid @RequestBody Tarefa tarefa){
         return  service.salvar(tarefa);
     }
 
@@ -31,7 +32,7 @@ public class TarefaController {
     }
 
     @PutMapping("/{id}")
-    public Tarefa update(@PathVariable Long id, @RequestBody Tarefa tarefa){
+    public Tarefa update(@PathVariable Long id, @Valid @RequestBody Tarefa tarefa){
         return  service.update(id, tarefa);
     }
 
